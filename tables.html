@@ -101,7 +101,10 @@
 
 
 					// Then display the remaining fields in the HTML (Section Name, Date, URL)
-					$("#tableWell-"+ i+1).append('<h2><span class="label label-primary">' + tableNumber + "</span> | " + tableData[i].customerID + "</h2>");
+					var heading = $("<h2>");
+					heading.append($("<span>").addClass("label label-primary").text(tableNumber));
+					heading.append(document.createTextNode(" | " + tableData[i].customerID));
+					tableSection.append(heading);
 				}
 			});
 	}
@@ -137,7 +140,10 @@
 					var tableNumber = i + 1;
 
 					// Then display the remaining fields in the HTML (Section Name, Date, URL)
-					$("#waitlistWell-"+ i+1).append('<h2><span class="label label-primary">' + tableNumber + "</span> | " + waitlistData[i].customerID + "</h2>");
+					var heading = $("<h2>");
+					heading.append($("<span>").addClass("label label-primary").text(tableNumber));
+					heading.append(document.createTextNode(" | " + waitlistData[i].customerID));
+					waitlistSection.append(heading);
 				}
 			});
 	}
@@ -146,16 +152,17 @@
 	function clearTable(){
 
 		var currentURL = window.location.origin;
-		$.ajax({url: currentURL + "/api/clear", method: "POST"})
+		return $.ajax({url: currentURL + "/api/clear", method: "POST"});
 
 	}
 
-	$("#clear").on('click', function(){
-		alert("Clearing...");
-		clearTable();
-
-		// Refresh the page after data is cleared
-		location.reload();
+	$("#clear").on('click', function(event){
+		event.preventDefault();
+		clearTable().done(function(){
+			location.reload();
+		}).fail(function(){
+			alert("Unable to clear reservations. Please try again.");
+		});
 	})
 
 
